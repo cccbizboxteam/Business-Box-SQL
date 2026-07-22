@@ -1,0 +1,410 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<title>Business Box Manual - (SQL Front Version)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css"> 
+<!-- 
+.selected {font-weight: normal;background-color: #E2E2E2;padding:0px,2px,0px,2px;}
+.unselected { font-weight: normal;padding:0px,2px,0px,2px;}
+.hand { cursor: hand; }
+.p {height: 16px;width: 16px;vertical-align: middle;border: 0;}
+div,body { font-family: Tahoma, Verdana; font-size: 11px; }
+A:link {text-decoration: none; color:#000000}
+A:visited {text-decoration: none; color: #000000}
+A:active {text-decoration: none; color: #000000 }
+A:hover {text-decoration: none; color: #FF0000 }
+
+-->
+</style>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var cl,pn,pm,bl;
+var path = 'icons/';
+var pos = 0;
+var icon;
+var tar = 'content';
+var display;
+var imgi;
+var AutoCollapse;
+var LastSelected = -1;
+var loaded = false;
+var max;
+var divlist;
+
+function SetEnv(v,a){
+
+if(v==0){ 
+	pn = [['daplus.gif','daminus.gif'],['tplus.gif','tminus.gif'],['uaplus.gif','uaminus.gif'],['splus.gif','sminus.gif']];
+	PreloadImg('downangle.gif','tshaped.gif','upangle.gif','sline.gif','daplus.gif','daminus.gif','tplus.gif','tminus.gif','uaplus.gif','uaminus.gif','splus.gif','sminus.gif','blank.gif','line.gif');
+}else{
+	pn = [['plus.gif','minus.gif']];
+	PreloadImg('plus.gif','minus.gif','blank.gif');
+
+}
+AutoCollapse = a;
+}
+
+ function PreloadImg(){
+if (document.images) { 
+	var imgs = PreloadImg.arguments; 
+	var pload = new Array();
+	for (var i=0; i<imgs.length; i++) { 
+		pload[i] = new Image; 
+		pload[i].src = path + imgs[i]; 
+	} 
+} 
+ } 
+
+function get(o){
+var x;
+if(document.all) x=document.all[o]; 
+if(document.getElementById) x=document.getElementById(o);
+
+return x;
+}
+
+
+function pnImg(img){
+var i,j;
+for(i=0;i<=3;i++){
+	for(j=0;j<=1;j++){
+	if(img.substr(img.lastIndexOf('/') + 1)== pn[i][j]){
+		return i;
+	}
+	}
+}
+}
+function icon(img){
+var f;
+f = img.substr(img.lastIndexOf('/') + 1);
+if( f=='1.gif' || f=='2.gif'){
+	return ['1.gif','2.gif'];
+}
+if( f=='3.gif' || f=='4.gif'){
+	return ['3.gif','4.gif'];
+}
+if( f=='5.gif' || f=='6.gif'){
+	return ['5.gif','6.gif'];
+}
+if( f=='7.gif' || f=='8.gif'){
+	return ['7.gif','8.gif'];
+}
+return [f,f];
+}
+
+function show(id){
+get('d' + id).style.display='block';
+if(get('imgn' + id )) get('imgn' + id ).src= path + pn[pnImg(get('imgn' + id ).src)][1];
+get('img' + id ).src= path + icon(get('img' + id ).src)[1];
+
+}
+
+function collapse(id){
+get('d' + id ).style.display='none';
+if(get('imgn' + id )) get('imgn' + id ).src= path + pn[pnImg(get('imgn' + id ).src)][0];
+get('img' + id ).src= path + icon(get('img' + id ).src)[0];
+
+}
+
+function collapseAll(){
+var i;
+var o;
+for(i=0;i<=divlist.length-1;i++){
+	if(o=get('d' + divlist[i])){
+		if(o.style.display!='none'){ 
+			collapse(divlist[i]);
+		}
+	}
+}
+}
+
+function showAll(){
+var i;
+var o;
+for(i=0;i<=divlist.length-1;i++){
+	if(o=get('d' + divlist[i])){
+		if(o.style.display!='block'){ 
+			show(divlist[i]);
+		}
+	}
+}
+}
+
+function unselectAll(){
+var i=0;
+while(get("l" + i)){
+	get("l" + i).className = "unselected";
+	i++;
+}
+}
+
+function clickNode(index){
+var e;
+
+e = get("l" + index);
+if(e==null) return;
+e = e.parentNode;
+if(e.nodeName == 'A'){
+	if(e.href!= window.location.href + '#'){
+		parent.parent.content.location.href = e.href;
+	}else{
+		selectNode(index);
+	}
+	e.onclick;
+}
+}
+
+function showParent(ele){
+var e;
+e = ele.parentNode;
+
+if(e==null) return;
+
+if(e.nodeName == 'DIV'){
+	if(e.id!='') show(e.id.substring(1,e.id.length ));
+}else if(e.nodeName == 'A'){
+
+}
+showParent(e);
+}
+
+function showNode(index){
+showParent(get("l" + index));
+LinkClick(index);
+}
+
+function selectNode(index){
+if(LastSelected!=index){
+//collapseAll();
+showParent(get("l" + index));
+LinkClick(index);
+get('l' + index).scrollIntoView(true);
+
+
+//alert(get('l' + index).offsetHeight + '|' + document.body.clientHeight + '|' + document.body.offsetHeight);
+window.scrollTo(0,document.body.scrollTop); // - document.body.clientHeight /3);
+}
+}
+
+
+function NodeClick(id){
+if(get('d' + id ).style.display=='none'){
+	show(id);
+}else{
+	collapse(id);
+}
+return false;
+}
+
+function LinkDblClick(id){
+if(!AutoCollapse){
+	if(get('d' + id ).style.display=='none'){
+		show(id);
+	}else{
+		collapse(id);
+	}
+}
+return false;
+}
+
+function LinkClick(index,hasChild,r){
+if(AutoCollapse && hasChild){
+	if(get('d' + index ).style.display=='none'){
+		collapseAll()
+		showParent(get('l' + index));
+		show(index);
+	}else{
+		collapseAll()
+		showParent(get('l' + index));	
+		collapse(index);
+	}
+}
+if(LastSelected!=-1){
+	get('l' + LastSelected).className = "unselected";
+}
+get('l' + index).className = "selected";
+LastSelected = index;
+return r;
+}
+
+function body_onmousemove(event){
+if(typeof(document.body.scrollTop)!='undefined'){
+if(parseInt(event.clientX)<5){
+window.scroll(0,document.body.scrollTop);}}
+if(typeof(window.scrollY)!='undefined'){
+if(parseInt(event.clientX)<5){
+window.scrollTo(0,window.scrollY);}}
+}
+
+window.defaultStatus = '';
+
+function body_onload(){
+get('loading').style.display='none';
+loaded = true;
+if(parent.parent.content.document.readyState){
+	if(parent.parent.content.document.readyState == 'complete'){
+		try{parent.parent.content.syn();}catch(e){};
+	}
+}else{
+	if(parent.parent.contentLoaded){
+		try{parent.parent.content.syn();}catch(e){};
+	}
+}
+}
+
+//-->
+</SCRIPT>
+<script language="JavaScript" src="languages.js"></script>
+
+</head>
+
+<body bgcolor="#ffffff" leftmargin="5" topmargin="5" marginwidth="5" marginheight="5" onmousemove="body_onmousemove(event);" onload="body_onload();">
+<div id="loading"><font color="#FF0000" size="1"> Loading table of contents... 
+</font><br><br></div>
+<script>SetEnv(0,true)</script><div><nobr><a href="#" onClick="return NodeClick('0')"><img id="imgn0" src="icons/splus.gif" class="p"></a><a href="topics/Front_Version.htm" onclick="return LinkClick('0',true,true)" onDblClick="return LinkDblClick('0')" target="content" title="Front Version" onmousemove="window.status='Front Version'"><img id="img0" src="icons/1.gif" class="p"> <span id="l0" class="unselected">Front Version</span></a></nobr></div>
+<div id="d0" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><a href="#" onClick="return NodeClick('1')"><img id="imgn1" src="icons/tplus.gif" class="p"></a><a href="topics/Master_Files.htm" onclick="return LinkClick('1',true,true)" onDblClick="return LinkDblClick('1')" target="content" title="Master Files" onmousemove="window.status='Master Files'"><img id="img1" src="icons/1.gif" class="p"> <span id="l1" class="unselected">Master Files</span></a></nobr></div>
+<div id="d1" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Customer.htm" onclick="return LinkClick('2',false,true)" target="content" title="Customer" onmousemove="window.status='Customer'"><img src="icons/11.gif" class="p"> <span id="l2" class="unselected">Customer</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Agent.htm" onclick="return LinkClick('3',false,true)" target="content" title="Agent" onmousemove="window.status='Agent'"><img src="icons/11.gif" class="p"> <span id="l3" class="unselected">Agent</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Collector.htm" onclick="return LinkClick('4',false,true)" target="content" title="Collector" onmousemove="window.status='Collector'"><img src="icons/11.gif" class="p"> <span id="l4" class="unselected">Collector</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Supplier.htm" onclick="return LinkClick('5',false,true)" target="content" title="Supplier" onmousemove="window.status='Supplier'"><img src="icons/11.gif" class="p"> <span id="l5" class="unselected">Supplier</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Employee.htm" onclick="return LinkClick('6',false,true)" target="content" title="Employee" onmousemove="window.status='Employee'"><img src="icons/11.gif" class="p"> <span id="l6" class="unselected">Employee</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Items.htm" onclick="return LinkClick('7',false,true)" target="content" title="Items" onmousemove="window.status='Items'"><img src="icons/11.gif" class="p"> <span id="l7" class="unselected">Items</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('8')"><img id="imgn8" src="icons/tplus.gif" class="p"></a><a href="topics/Other_Files.htm" onclick="return LinkClick('8',true,true)" onDblClick="return LinkDblClick('8')" target="content" title="Other Files" onmousemove="window.status='Other Files'"><img id="img8" src="icons/1.gif" class="p"> <span id="l8" class="unselected">Other Files</span></a></nobr></div>
+<div id="d8" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Area.htm" onclick="return LinkClick('9',false,true)" target="content" title="Area" onmousemove="window.status='Area'"><img src="icons/11.gif" class="p"> <span id="l9" class="unselected">Area</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Other_Files_files_banks.htm" onclick="return LinkClick('10',false,true)" target="content" title="Banks" onmousemove="window.status='Banks'"><img src="icons/11.gif" class="p"> <span id="l10" class="unselected">Banks</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Other_Files_files_company_class.htm" onclick="return LinkClick('11',false,true)" target="content" title="Company Class" onmousemove="window.status='Company Class'"><img src="icons/11.gif" class="p"> <span id="l11" class="unselected">Company Class</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Other_Files_Company_group.htm" onclick="return LinkClick('12',false,true)" target="content" title="Company Group" onmousemove="window.status='Company Group'"><img src="icons/11.gif" class="p"> <span id="l12" class="unselected">Company Group</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Other_Files_files_currency.htm" onclick="return LinkClick('13',false,true)" target="content" title="Currency" onmousemove="window.status='Currency'"><img src="icons/11.gif" class="p"> <span id="l13" class="unselected">Currency</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Other_Files_files_Department.htm" onclick="return LinkClick('14',false,true)" target="content" title="Department" onmousemove="window.status='Department'"><img src="icons/11.gif" class="p"> <span id="l14" class="unselected">Department</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Other_Files_Document_List.htm" onclick="return LinkClick('15',false,true)" target="content" title="Document List" onmousemove="window.status='Document List'"><img src="icons/11.gif" class="p"> <span id="l15" class="unselected">Document List</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Other_Files_Item_Classification.htm" onclick="return LinkClick('16',false,true)" target="content" title="Item Classification" onmousemove="window.status='Item Classification'"><img src="icons/11.gif" class="p"> <span id="l16" class="unselected">Item Classification</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Other_Files_Miscellaneous_Charges.htm" onclick="return LinkClick('17',false,true)" target="content" title="Miscellaneous Charges" onmousemove="window.status='Miscellaneous Charges'"><img src="icons/11.gif" class="p"> <span id="l17" class="unselected">Miscellaneous Charges</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Other_Files_Payment_type.htm" onclick="return LinkClick('18',false,true)" target="content" title="Payment Type" onmousemove="window.status='Payment Type'"><img src="icons/11.gif" class="p"> <span id="l18" class="unselected">Payment Type</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Other_Files_Petty_Classification.htm" onclick="return LinkClick('19',false,true)" target="content" title="Petty Classification" onmousemove="window.status='Petty Classification'"><img src="icons/11.gif" class="p"> <span id="l19" class="unselected">Petty Classification</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Other_Files_Tax_Codes.htm" onclick="return LinkClick('20',false,true)" target="content" title="Tax Codes" onmousemove="window.status='Tax Codes'"><img src="icons/11.gif" class="p"> <span id="l20" class="unselected">Tax Codes</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Other_Files_terms.htm" onclick="return LinkClick('21',false,true)" target="content" title="Terms of Payment" onmousemove="window.status='Terms of Payment'"><img src="icons/11.gif" class="p"> <span id="l21" class="unselected">Terms of Payment</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Other_Files_Transaction_Group.htm" onclick="return LinkClick('22',false,true)" target="content" title="Transaction Group" onmousemove="window.status='Transaction Group'"><img src="icons/11.gif" class="p"> <span id="l22" class="unselected">Transaction Group</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Other_Files_Transaction_type.htm" onclick="return LinkClick('23',false,true)" target="content" title="Transaction Type" onmousemove="window.status='Transaction Type'"><img src="icons/11.gif" class="p"> <span id="l23" class="unselected">Transaction Type</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Other_Files_UnitOfMeasurement.htm" onclick="return LinkClick('24',false,true)" target="content" title="Unit of Measurement" onmousemove="window.status='Unit of Measurement'"><img src="icons/11.gif" class="p"> <span id="l24" class="unselected">Unit of Measurement</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Other_Files_Warehouse.htm" onclick="return LinkClick('25',false,true)" target="content" title="Warehouse" onmousemove="window.status='Warehouse'"><img src="icons/11.gif" class="p"> <span id="l25" class="unselected">Warehouse</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Item_Price_Reference.htm" onclick="return LinkClick('26',false,true)" target="content" title="Item Price Reference" onmousemove="window.status='Item Price Reference'"><img src="icons/11.gif" class="p"> <span id="l26" class="unselected">Item Price Reference</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Price_Update.htm" onclick="return LinkClick('27',false,true)" target="content" title="Price Update" onmousemove="window.status='Price Update'"><img src="icons/11.gif" class="p"> <span id="l27" class="unselected">Price Update</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Audit_Trail.htm" onclick="return LinkClick('28',false,true)" target="content" title="Audit Trail" onmousemove="window.status='Audit Trail'"><img src="icons/11.gif" class="p"> <span id="l28" class="unselected">Audit Trail</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Setup_-_Trading.htm" onclick="return LinkClick('29',false,true)" target="content" title="Setup - Trading" onmousemove="window.status='Setup - Trading'"><img src="icons/11.gif" class="p"> <span id="l29" class="unselected">Setup - Trading</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><a href="#" onClick="return NodeClick('30')"><img id="imgn30" src="icons/tplus.gif" class="p"></a><a href="topics/Sales_menu.htm" onclick="return LinkClick('30',true,true)" onDblClick="return LinkDblClick('30')" target="content" title="Sales" onmousemove="window.status='Sales'"><img id="img30" src="icons/1.gif" class="p"> <span id="l30" class="unselected">Sales</span></a></nobr></div>
+<div id="d30" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('31')"><img id="imgn31" src="icons/tplus.gif" class="p"></a><a href="topics/Sales_Order.htm" onclick="return LinkClick('31',true,true)" onDblClick="return LinkDblClick('31')" target="content" title="Sales Order" onmousemove="window.status='Sales Order'"><img id="img31" src="icons/1.gif" class="p"> <span id="l31" class="unselected">Sales Order</span></a></nobr></div>
+<div id="d31" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Sales_Order_create.htm" onclick="return LinkClick('32',false,true)" target="content" title="I. How to use Sales Order" onmousemove="window.status='I. How to use Sales Order'"><img src="icons/11.gif" class="p"> <span id="l32" class="unselected">I. How to use Sales Order</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Sales_Order_find.htm" onclick="return LinkClick('33',false,true)" target="content" title="II. Searching for a Transaction in the Sales Order" onmousemove="window.status='II. Searching for a Transaction in the Sales Order'"><img src="icons/11.gif" class="p"> <span id="l33" class="unselected">II. Searching for a Transaction in the Sales Order</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/sales_order_print.htm" onclick="return LinkClick('34',false,true)" target="content" title="III. Printing a Sales Order /Batch Printing" onmousemove="window.status='III. Printing a Sales Order /Batch Printing'"><img src="icons/11.gif" class="p"> <span id="l34" class="unselected">III. Printing a Sales Order /Batch Printing</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('35')"><img id="imgn35" src="icons/tplus.gif" class="p"></a><a href="topics/Delivery_Receipt.htm" onclick="return LinkClick('35',true,true)" onDblClick="return LinkDblClick('35')" target="content" title="Delivery Receipt / Pull Out" onmousemove="window.status='Delivery Receipt / Pull Out'"><img id="img35" src="icons/1.gif" class="p"> <span id="l35" class="unselected">Delivery Receipt / Pull Out</span></a></nobr></div>
+<div id="d35" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Delivery_Receipt_create.htm" onclick="return LinkClick('36',false,true)" target="content" title="I. How to use Delivery Receipt &amp; Pull-out" onmousemove="window.status='I. How to use Delivery Receipt &amp; Pull-out'"><img src="icons/11.gif" class="p"> <span id="l36" class="unselected">I. How to use Delivery Receipt &amp; Pull-out</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Delivery_Receipt_find.htm" onclick="return LinkClick('37',false,true)" target="content" title="II. Searching for a Transaction in the Delivery Receipt &amp; Pull-out" onmousemove="window.status='II. Searching for a Transaction in the Delivery Receipt &amp; Pull-out'"><img src="icons/11.gif" class="p"> <span id="l37" class="unselected">II. Searching for a Transaction in the Delivery Receipt &amp; Pull-out</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Delivery_Receipt_print.htm" onclick="return LinkClick('38',false,true)" target="content" title="III. Printing a Delivery Receipt &amp; Pull-out" onmousemove="window.status='III. Printing a Delivery Receipt &amp; Pull-out'"><img src="icons/11.gif" class="p"> <span id="l38" class="unselected">III. Printing a Delivery Receipt &amp; Pull-out</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Delivery_Receipt_extract_SODR.htm" onclick="return LinkClick('39',false,true)" target="content" title="IV. Extractions from SO to DR" onmousemove="window.status='IV. Extractions from SO to DR'"><img src="icons/11.gif" class="p"> <span id="l39" class="unselected">IV. Extractions from SO to DR</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Delivery_Receipt_DRPO.htm" onclick="return LinkClick('40',false,true)" target="content" title="V. Extraction DR to Pull-out" onmousemove="window.status='V. Extraction DR to Pull-out'"><img src="icons/11.gif" class="p"> <span id="l40" class="unselected">V. Extraction DR to Pull-out</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('41')"><img id="imgn41" src="icons/tplus.gif" class="p"></a><a href="topics/Sales_Invoice.htm" onclick="return LinkClick('41',true,true)" onDblClick="return LinkDblClick('41')" target="content" title="Sales Invoice / Sales Adjustment" onmousemove="window.status='Sales Invoice / Sales Adjustment'"><img id="img41" src="icons/1.gif" class="p"> <span id="l41" class="unselected">Sales Invoice / Sales Adjustment</span></a></nobr></div>
+<div id="d41" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Sales_Invoice_direct_si.htm" onclick="return LinkClick('42',false,true)" target="content" title="I. How to use Sales Invoice &amp; Sales Adjustment" onmousemove="window.status='I. How to use Sales Invoice &amp; Sales Adjustment'"><img src="icons/11.gif" class="p"> <span id="l42" class="unselected">I. How to use Sales Invoice &amp; Sales Adjustment</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Sales_Invoice_searching.htm" onclick="return LinkClick('43',false,true)" target="content" title="II. Searching for a Transaction in the Sales Invoice &amp; Sales Adjustment" onmousemove="window.status='II. Searching for a Transaction in the Sales Invoice &amp; Sales Adjustment'"><img src="icons/11.gif" class="p"> <span id="l43" class="unselected">II. Searching for a Transaction in the Sales Invoice &amp; Sales Adjustment</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Sales_invoice_Batch_Printing.htm" onclick="return LinkClick('44',false,true)" target="content" title="III. Printing a Sales Invoice &amp; Sales Adjustment" onmousemove="window.status='III. Printing a Sales Invoice &amp; Sales Adjustment'"><img src="icons/11.gif" class="p"> <span id="l44" class="unselected">III. Printing a Sales Invoice &amp; Sales Adjustment</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Sales_Invoice_extraction_DRSI.htm" onclick="return LinkClick('45',false,true)" target="content" title="IV. Extraction from DR to SI" onmousemove="window.status='IV. Extraction from DR to SI'"><img src="icons/11.gif" class="p"> <span id="l45" class="unselected">IV. Extraction from DR to SI</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Sales_Invoice_extraction_SOSI.htm" onclick="return LinkClick('46',false,true)" target="content" title="V. Extraction From SO to SI" onmousemove="window.status='V. Extraction From SO to SI'"><img src="icons/11.gif" class="p"> <span id="l46" class="unselected">V. Extraction From SO to SI</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Sales_Invoice_extraction_SISA.htm" onclick="return LinkClick('47',false,true)" target="content" title="VI. Extraction SI for Returns ( Sales Adjustment)" onmousemove="window.status='VI. Extraction SI for Returns ( Sales Adjustment)'"><img src="icons/11.gif" class="p"> <span id="l47" class="unselected">VI. Extraction SI for Returns ( Sales Adjustment)</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('48')"><img id="imgn48" src="icons/tplus.gif" class="p"></a><a href="topics/AR_Summary_Entry.htm" onclick="return LinkClick('48',true,true)" onDblClick="return LinkDblClick('48')" target="content" title="AR Summary Entry" onmousemove="window.status='AR Summary Entry'"><img id="img48" src="icons/1.gif" class="p"> <span id="l48" class="unselected">AR Summary Entry</span></a></nobr></div>
+<div id="d48" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/AR_Summary_Entry_create.htm" onclick="return LinkClick('49',false,true)" target="content" title="I. How to use A/R Summary Entry" onmousemove="window.status='I. How to use A/R Summary Entry'"><img src="icons/11.gif" class="p"> <span id="l49" class="unselected">I. How to use A/R Summary Entry</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/AR_Summary_Entry_searching.htm" onclick="return LinkClick('50',false,true)" target="content" title="II. Searching for a Transaction in the A/R Summary Entry" onmousemove="window.status='II. Searching for a Transaction in the A/R Summary Entry'"><img src="icons/11.gif" class="p"> <span id="l50" class="unselected">II. Searching for a Transaction in the A/R Summary Entry</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/AR_Summary_Entry_printing.htm" onclick="return LinkClick('51',false,true)" target="content" title="III. Printing an A/R Summary Entry" onmousemove="window.status='III. Printing an A/R Summary Entry'"><img src="icons/11.gif" class="p"> <span id="l51" class="unselected">III. Printing an A/R Summary Entry</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('52')"><img id="imgn52" src="icons/uaplus.gif" class="p"></a><a href="topics/Accounts_Receivable_Application.htm" onclick="return LinkClick('52',true,true)" onDblClick="return LinkDblClick('52')" target="content" title="Accounts Receivables Application" onmousemove="window.status='Accounts Receivables Application'"><img id="img52" src="icons/1.gif" class="p"> <span id="l52" class="unselected">Accounts Receivables Application</span></a></nobr></div>
+<div id="d52" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Accounts_Receivable_Application_creating.htm" onclick="return LinkClick('53',false,true)" target="content" title="I. How to use Accounts Receivable Application" onmousemove="window.status='I. How to use Accounts Receivable Application'"><img src="icons/11.gif" class="p"> <span id="l53" class="unselected">I. How to use Accounts Receivable Application</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/$$unsavedpage1.htm" onclick="return LinkClick('54',false,true)" target="content" title="II.	Searching for a Transaction in the Accounts Receivable Application" onmousemove="window.status='II.	Searching for a Transaction in the Accounts Receivable Application'"><img src="icons/11.gif" class="p"> <span id="l54" class="unselected">II.	Searching for a Transaction in the Accounts Receivable Application</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/$$unsavedpage2.htm" onclick="return LinkClick('55',false,true)" target="content" title="III. Printing an Accounts Receivable Application" onmousemove="window.status='III. Printing an Accounts Receivable Application'"><img src="icons/11.gif" class="p"> <span id="l55" class="unselected">III. Printing an Accounts Receivable Application</span></a></nobr></div>
+</div></div><div><nobr><img src="icons/blank.gif" class="p"><a href="#" onClick="return NodeClick('56')"><img id="imgn56" src="icons/tplus.gif" class="p"></a><a href="topics/Purchase_menu.htm" onclick="return LinkClick('56',true,true)" onDblClick="return LinkDblClick('56')" target="content" title="Purchase" onmousemove="window.status='Purchase'"><img id="img56" src="icons/1.gif" class="p"> <span id="l56" class="unselected">Purchase</span></a></nobr></div>
+<div id="d56" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('57')"><img id="imgn57" src="icons/tplus.gif" class="p"></a><a href="topics/Purchase_Request.htm" onclick="return LinkClick('57',true,true)" onDblClick="return LinkDblClick('57')" target="content" title="Purchase Request" onmousemove="window.status='Purchase Request'"><img id="img57" src="icons/1.gif" class="p"> <span id="l57" class="unselected">Purchase Request</span></a></nobr></div>
+<div id="d57" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Purchase_Request_creating.htm" onclick="return LinkClick('58',false,true)" target="content" title="I. How to use Purchase Request" onmousemove="window.status='I. How to use Purchase Request'"><img src="icons/11.gif" class="p"> <span id="l58" class="unselected">I. How to use Purchase Request</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Purchase_Request_searching.htm" onclick="return LinkClick('59',false,true)" target="content" title="II. Searching for a Transaction in the Purchase Request" onmousemove="window.status='II. Searching for a Transaction in the Purchase Request'"><img src="icons/11.gif" class="p"> <span id="l59" class="unselected">II. Searching for a Transaction in the Purchase Request</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Purchase_Request_print.htm" onclick="return LinkClick('60',false,true)" target="content" title="III. Printing a Purchase Request" onmousemove="window.status='III. Printing a Purchase Request'"><img src="icons/11.gif" class="p"> <span id="l60" class="unselected">III. Printing a Purchase Request</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Purchase_Request_extraction_RSPR.htm" onclick="return LinkClick('61',false,true)" target="content" title="IV. Extraction from Requisition Slip" onmousemove="window.status='IV. Extraction from Requisition Slip'"><img src="icons/11.gif" class="p"> <span id="l61" class="unselected">IV. Extraction from Requisition Slip</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Purchase_Request_extraction_SOPR.htm" onclick="return LinkClick('62',false,true)" target="content" title="V. Extraction from Sales Order" onmousemove="window.status='V. Extraction from Sales Order'"><img src="icons/11.gif" class="p"> <span id="l62" class="unselected">V. Extraction from Sales Order</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/$$unsavedpage3.htm" onclick="return LinkClick('63',false,true)" target="content" title="Canvassing" onmousemove="window.status='Canvassing'"><img src="icons/11.gif" class="p"> <span id="l63" class="unselected">Canvassing</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('64')"><img id="imgn64" src="icons/tplus.gif" class="p"></a><a href="topics/Purchase_Order.htm" onclick="return LinkClick('64',true,true)" onDblClick="return LinkDblClick('64')" target="content" title="Purchase Order" onmousemove="window.status='Purchase Order'"><img id="img64" src="icons/1.gif" class="p"> <span id="l64" class="unselected">Purchase Order</span></a></nobr></div>
+<div id="d64" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Purchase_Order_creating.htm" onclick="return LinkClick('65',false,true)" target="content" title="I. How to use Purchase Order" onmousemove="window.status='I. How to use Purchase Order'"><img src="icons/11.gif" class="p"> <span id="l65" class="unselected">I. How to use Purchase Order</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Purchase_Order_searching.htm" onclick="return LinkClick('66',false,true)" target="content" title="II. Searching for a Transaction in the Purchase Order" onmousemove="window.status='II. Searching for a Transaction in the Purchase Order'"><img src="icons/11.gif" class="p"> <span id="l66" class="unselected">II. Searching for a Transaction in the Purchase Order</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Purchase_Order_print.htm" onclick="return LinkClick('67',false,true)" target="content" title="III. Printing a Purchase Order" onmousemove="window.status='III. Printing a Purchase Order'"><img src="icons/11.gif" class="p"> <span id="l67" class="unselected">III. Printing a Purchase Order</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Purchase_Order_extraction_PRPO.htm" onclick="return LinkClick('68',false,true)" target="content" title="IV. Extraction from Purchase Request" onmousemove="window.status='IV. Extraction from Purchase Request'"><img src="icons/11.gif" class="p"> <span id="l68" class="unselected">IV. Extraction from Purchase Request</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Purchase_Order_extraction_SOPO.htm" onclick="return LinkClick('69',false,true)" target="content" title="V. Extraction from Sales Order" onmousemove="window.status='V. Extraction from Sales Order'"><img src="icons/11.gif" class="p"> <span id="l69" class="unselected">V. Extraction from Sales Order</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('70')"><img id="imgn70" src="icons/tplus.gif" class="p"></a><a href="topics/Receiving_Report_or_Return.htm" onclick="return LinkClick('70',true,true)" onDblClick="return LinkDblClick('70')" target="content" title="Receiving Report / Return" onmousemove="window.status='Receiving Report / Return'"><img id="img70" src="icons/1.gif" class="p"> <span id="l70" class="unselected">Receiving Report / Return</span></a></nobr></div>
+<div id="d70" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Receiving_Report_or_Return_creating.htm" onclick="return LinkClick('71',false,true)" target="content" title="I. How to use Receiving Report / Return" onmousemove="window.status='I. How to use Receiving Report / Return'"><img src="icons/11.gif" class="p"> <span id="l71" class="unselected">I. How to use Receiving Report / Return</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Receiving_Report_or_Return_searching.htm" onclick="return LinkClick('72',false,true)" target="content" title="II.Searching for a Transaction in the Receiving Report / Return" onmousemove="window.status='II.Searching for a Transaction in the Receiving Report / Return'"><img src="icons/11.gif" class="p"> <span id="l72" class="unselected">II.Searching for a Transaction in the Receiving Report / Return</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Receiving_Report_or_Return_printing.htm" onclick="return LinkClick('73',false,true)" target="content" title="III. Printing a Receiving Report / Return" onmousemove="window.status='III. Printing a Receiving Report / Return'"><img src="icons/11.gif" class="p"> <span id="l73" class="unselected">III. Printing a Receiving Report / Return</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Receiving_Report_or_Return_extraction_PORR.htm" onclick="return LinkClick('74',false,true)" target="content" title="IV. Extraction from Purchase Order" onmousemove="window.status='IV. Extraction from Purchase Order'"><img src="icons/11.gif" class="p"> <span id="l74" class="unselected">IV. Extraction from Purchase Order</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Receiving_Report_or_Return_extraction_RRRS.htm" onclick="return LinkClick('75',false,true)" target="content" title="V. Extraction Receiving Report to Return Slip" onmousemove="window.status='V. Extraction Receiving Report to Return Slip'"><img src="icons/11.gif" class="p"> <span id="l75" class="unselected">V. Extraction Receiving Report to Return Slip</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('76')"><img id="imgn76" src="icons/tplus.gif" class="p"></a><a href="topics/Purchase_Invoice_and_Purchase_Adjustment.htm" onclick="return LinkClick('76',true,true)" onDblClick="return LinkDblClick('76')" target="content" title="Purchase Invoice / Purchase Adjustment" onmousemove="window.status='Purchase Invoice / Purchase Adjustment'"><img id="img76" src="icons/1.gif" class="p"> <span id="l76" class="unselected">Purchase Invoice / Purchase Adjustment</span></a></nobr></div>
+<div id="d76" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Purchase_Invoice_and_Adjustment_creating.htm" onclick="return LinkClick('77',false,true)" target="content" title="I. How to use Purchase Invoice / Adjustment" onmousemove="window.status='I. How to use Purchase Invoice / Adjustment'"><img src="icons/11.gif" class="p"> <span id="l77" class="unselected">I. How to use Purchase Invoice / Adjustment</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Purchase_Invoice_and_Adjustment_searching.htm" onclick="return LinkClick('78',false,true)" target="content" title="II.Searching for a Transaction in the Purchase Invoice / Adjustment" onmousemove="window.status='II.Searching for a Transaction in the Purchase Invoice / Adjustment'"><img src="icons/11.gif" class="p"> <span id="l78" class="unselected">II.Searching for a Transaction in the Purchase Invoice / Adjustment</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Purchase_Invoice_and_Adjustment_printing.htm" onclick="return LinkClick('79',false,true)" target="content" title="III. Printing a Purchase Invoice / Adjustment" onmousemove="window.status='III. Printing a Purchase Invoice / Adjustment'"><img src="icons/11.gif" class="p"> <span id="l79" class="unselected">III. Printing a Purchase Invoice / Adjustment</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Purchase_Invoice_and_Adjustment_extraction_POPI.htm" onclick="return LinkClick('80',false,true)" target="content" title="IV. Extraction from Purchase Order" onmousemove="window.status='IV. Extraction from Purchase Order'"><img src="icons/11.gif" class="p"> <span id="l80" class="unselected">IV. Extraction from Purchase Order</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Purchase_Invoice_and_Adjustment_extraction_RRPI.htm" onclick="return LinkClick('81',false,true)" target="content" title="V. Extraction from Receiving Report" onmousemove="window.status='V. Extraction from Receiving Report'"><img src="icons/11.gif" class="p"> <span id="l81" class="unselected">V. Extraction from Receiving Report</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Purchase_Invoice_and_Adjustment_extraction_PIPA.htm" onclick="return LinkClick('82',false,true)" target="content" title="VI. Extraction Purchase Invoice to Purchase Adjustment" onmousemove="window.status='VI. Extraction Purchase Invoice to Purchase Adjustment'"><img src="icons/11.gif" class="p"> <span id="l82" class="unselected">VI. Extraction Purchase Invoice to Purchase Adjustment</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('83')"><img id="imgn83" src="icons/tplus.gif" class="p"></a><a href="topics/AP_Summary_Entry.htm" onclick="return LinkClick('83',true,true)" onDblClick="return LinkDblClick('83')" target="content" title="AP Summary Entry" onmousemove="window.status='AP Summary Entry'"><img id="img83" src="icons/1.gif" class="p"> <span id="l83" class="unselected">AP Summary Entry</span></a></nobr></div>
+<div id="d83" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/AP_Summary_entry_creating.htm" onclick="return LinkClick('84',false,true)" target="content" title="I. How to use AP Summary Entry" onmousemove="window.status='I. How to use AP Summary Entry'"><img src="icons/11.gif" class="p"> <span id="l84" class="unselected">I. How to use AP Summary Entry</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/AP_Summary_Entry_searching.htm" onclick="return LinkClick('85',false,true)" target="content" title="II. Searching for a Transaction in the AP Summary Entry" onmousemove="window.status='II. Searching for a Transaction in the AP Summary Entry'"><img src="icons/11.gif" class="p"> <span id="l85" class="unselected">II. Searching for a Transaction in the AP Summary Entry</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/AP_Summary_Entry_printing.htm" onclick="return LinkClick('86',false,true)" target="content" title="III. Printing an AP Summary Entry" onmousemove="window.status='III. Printing an AP Summary Entry'"><img src="icons/11.gif" class="p"> <span id="l86" class="unselected">III. Printing an AP Summary Entry</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('87')"><img id="imgn87" src="icons/uaplus.gif" class="p"></a><a href="topics/Accounts_Payable_Application.htm" onclick="return LinkClick('87',true,true)" onDblClick="return LinkDblClick('87')" target="content" title="Accounts Payable Application" onmousemove="window.status='Accounts Payable Application'"><img id="img87" src="icons/1.gif" class="p"> <span id="l87" class="unselected">Accounts Payable Application</span></a></nobr></div>
+<div id="d87" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Accounts_Payable_Application_creating.htm" onclick="return LinkClick('88',false,true)" target="content" title="I. How to use Accounts Payable Application" onmousemove="window.status='I. How to use Accounts Payable Application'"><img src="icons/11.gif" class="p"> <span id="l88" class="unselected">I. How to use Accounts Payable Application</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Accounts_Payable_Application_searching.htm" onclick="return LinkClick('89',false,true)" target="content" title="II.	Searching for a Transaction in the Accounts Payable Application" onmousemove="window.status='II.	Searching for a Transaction in the Accounts Payable Application'"><img src="icons/11.gif" class="p"> <span id="l89" class="unselected">II.	Searching for a Transaction in the Accounts Payable Application</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Accounts_Payable_Application_printing.htm" onclick="return LinkClick('90',false,true)" target="content" title="III. Printing an Accounts Payable Application" onmousemove="window.status='III. Printing an Accounts Payable Application'"><img src="icons/11.gif" class="p"> <span id="l90" class="unselected">III. Printing an Accounts Payable Application</span></a></nobr></div>
+</div></div><div><nobr><img src="icons/blank.gif" class="p"><a href="#" onClick="return NodeClick('91')"><img id="imgn91" src="icons/tplus.gif" class="p"></a><a href="topics/Inventory_menu.htm" onclick="return LinkClick('91',true,true)" onDblClick="return LinkDblClick('91')" target="content" title="Inventory" onmousemove="window.status='Inventory'"><img id="img91" src="icons/1.gif" class="p"> <span id="l91" class="unselected">Inventory</span></a></nobr></div>
+<div id="d91" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Inventory_Costing.htm" onclick="return LinkClick('92',false,true)" target="content" title="Inventory Costing" onmousemove="window.status='Inventory Costing'"><img src="icons/11.gif" class="p"> <span id="l92" class="unselected">Inventory Costing</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('93')"><img id="imgn93" src="icons/tplus.gif" class="p"></a><a href="topics/Inventory_Adjustment.htm" onclick="return LinkClick('93',true,true)" onDblClick="return LinkDblClick('93')" target="content" title="Inventory Adjustment" onmousemove="window.status='Inventory Adjustment'"><img id="img93" src="icons/1.gif" class="p"> <span id="l93" class="unselected">Inventory Adjustment</span></a></nobr></div>
+<div id="d93" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Inventory_Adjustment_creating.htm" onclick="return LinkClick('94',false,true)" target="content" title="I. How to use Inventory Adjustment" onmousemove="window.status='I. How to use Inventory Adjustment'"><img src="icons/11.gif" class="p"> <span id="l94" class="unselected">I. How to use Inventory Adjustment</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Inventory_Adjustment_searching.htm" onclick="return LinkClick('95',false,true)" target="content" title="II. Searching for a Transaction in the Inventory Adjustment" onmousemove="window.status='II. Searching for a Transaction in the Inventory Adjustment'"><img src="icons/11.gif" class="p"> <span id="l95" class="unselected">II. Searching for a Transaction in the Inventory Adjustment</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Inventory_Adjustment_print.htm" onclick="return LinkClick('96',false,true)" target="content" title="III. Printing an Inventory Adjustment" onmousemove="window.status='III. Printing an Inventory Adjustment'"><img src="icons/11.gif" class="p"> <span id="l96" class="unselected">III. Printing an Inventory Adjustment</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('97')"><img id="imgn97" src="icons/tplus.gif" class="p"></a><a href="topics/Requisition_Slip.htm" onclick="return LinkClick('97',true,true)" onDblClick="return LinkDblClick('97')" target="content" title="Requisition Slip" onmousemove="window.status='Requisition Slip'"><img id="img97" src="icons/1.gif" class="p"> <span id="l97" class="unselected">Requisition Slip</span></a></nobr></div>
+<div id="d97" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Requisition_slip_Creating_a_Requisition_Slip.htm" onclick="return LinkClick('98',false,true)" target="content" title="I. How to use Requisition Slip" onmousemove="window.status='I. How to use Requisition Slip'"><img src="icons/11.gif" class="p"> <span id="l98" class="unselected">I. How to use Requisition Slip</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Requisition_Slip_Searching.htm" onclick="return LinkClick('99',false,true)" target="content" title="II. Searching for a Transaction in the Requisition Slip" onmousemove="window.status='II. Searching for a Transaction in the Requisition Slip'"><img src="icons/11.gif" class="p"> <span id="l99" class="unselected">II. Searching for a Transaction in the Requisition Slip</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Requisition_slip_print.htm" onclick="return LinkClick('100',false,true)" target="content" title="III. Printing a Requisition Slip" onmousemove="window.status='III. Printing a Requisition Slip'"><img src="icons/11.gif" class="p"> <span id="l100" class="unselected">III. Printing a Requisition Slip</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('101')"><img id="imgn101" src="icons/tplus.gif" class="p"></a><a href="topics/Issuance_Slip.htm" onclick="return LinkClick('101',true,true)" onDblClick="return LinkDblClick('101')" target="content" title="Issuance Slip" onmousemove="window.status='Issuance Slip'"><img id="img101" src="icons/1.gif" class="p"> <span id="l101" class="unselected">Issuance Slip</span></a></nobr></div>
+<div id="d101" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Issuance_Slip_create.htm" onclick="return LinkClick('102',false,true)" target="content" title="I. How to use Issuance Slip" onmousemove="window.status='I. How to use Issuance Slip'"><img src="icons/11.gif" class="p"> <span id="l102" class="unselected">I. How to use Issuance Slip</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Issuance_Slip_searching.htm" onclick="return LinkClick('103',false,true)" target="content" title="II. Searching for a Transaction in the Issuance Slip" onmousemove="window.status='II. Searching for a Transaction in the Issuance Slip'"><img src="icons/11.gif" class="p"> <span id="l103" class="unselected">II. Searching for a Transaction in the Issuance Slip</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Issuance_Slip_print.htm" onclick="return LinkClick('104',false,true)" target="content" title="III. Printing an Issuance Slip" onmousemove="window.status='III. Printing an Issuance Slip'"><img src="icons/11.gif" class="p"> <span id="l104" class="unselected">III. Printing an Issuance Slip</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Issuance_Slip_extraction_RSIS.htm" onclick="return LinkClick('105',false,true)" target="content" title="IV. Extraction from Requisition Slip to IS" onmousemove="window.status='IV. Extraction from Requisition Slip to IS'"><img src="icons/11.gif" class="p"> <span id="l105" class="unselected">IV. Extraction from Requisition Slip to IS</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('106')"><img id="imgn106" src="icons/tplus.gif" class="p"></a><a href="topics/Stock_Requisition.htm" onclick="return LinkClick('106',true,true)" onDblClick="return LinkDblClick('106')" target="content" title="Stock Requistion" onmousemove="window.status='Stock Requistion'"><img id="img106" src="icons/1.gif" class="p"> <span id="l106" class="unselected">Stock Requistion</span></a></nobr></div>
+<div id="d106" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Stock_Requisition_creating.htm" onclick="return LinkClick('107',false,true)" target="content" title="I. How to use Stock Requisition" onmousemove="window.status='I. How to use Stock Requisition'"><img src="icons/11.gif" class="p"> <span id="l107" class="unselected">I. How to use Stock Requisition</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Stock_Requisition_searching.htm" onclick="return LinkClick('108',false,true)" target="content" title="II. Searching for a Transaction in the Stock Requisition" onmousemove="window.status='II. Searching for a Transaction in the Stock Requisition'"><img src="icons/11.gif" class="p"> <span id="l108" class="unselected">II. Searching for a Transaction in the Stock Requisition</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Stock_Requisition_print.htm" onclick="return LinkClick('109',false,true)" target="content" title="III. Printing a Stock Requisition" onmousemove="window.status='III. Printing a Stock Requisition'"><img src="icons/11.gif" class="p"> <span id="l109" class="unselected">III. Printing a Stock Requisition</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><a href="#" onClick="return NodeClick('110')"><img id="imgn110" src="icons/uaplus.gif" class="p"></a><a href="topics/Stock_Transfer.htm" onclick="return LinkClick('110',true,true)" onDblClick="return LinkDblClick('110')" target="content" title="Stock Transfer" onmousemove="window.status='Stock Transfer'"><img id="img110" src="icons/1.gif" class="p"> <span id="l110" class="unselected">Stock Transfer</span></a></nobr></div>
+<div id="d110" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Stock_Transfer_creating.htm" onclick="return LinkClick('111',false,true)" target="content" title="I. How to use Stock Transfer" onmousemove="window.status='I. How to use Stock Transfer'"><img src="icons/11.gif" class="p"> <span id="l111" class="unselected">I. How to use Stock Transfer</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Stock_Transfer_searching.htm" onclick="return LinkClick('112',false,true)" target="content" title="II. Searching for a Transaction in the Stock Transfer" onmousemove="window.status='II. Searching for a Transaction in the Stock Transfer'"><img src="icons/11.gif" class="p"> <span id="l112" class="unselected">II. Searching for a Transaction in the Stock Transfer</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Stock_Transfer_print.htm" onclick="return LinkClick('113',false,true)" target="content" title="III. Printing a Stock Transfer" onmousemove="window.status='III. Printing a Stock Transfer'"><img src="icons/11.gif" class="p"> <span id="l113" class="unselected">III. Printing a Stock Transfer</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Stock_Transfer_extraction_SRST.htm" onclick="return LinkClick('114',false,true)" target="content" title="IV. Extraction from Stock Requisition to ST" onmousemove="window.status='IV. Extraction from Stock Requisition to ST'"><img src="icons/11.gif" class="p"> <span id="l114" class="unselected">IV. Extraction from Stock Requisition to ST</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Stock_Transfer_Extraction_from_PIST.htm" onclick="return LinkClick('115',false,true)" target="content" title="V. Extraction from Purchase Invoice  to ST" onmousemove="window.status='V. Extraction from Purchase Invoice  to ST'"><img src="icons/11.gif" class="p"> <span id="l115" class="unselected">V. Extraction from Purchase Invoice  to ST</span></a></nobr></div>
+</div></div><div><nobr><img src="icons/blank.gif" class="p"><a href="#" onClick="return NodeClick('116')"><img id="imgn116" src="icons/uaplus.gif" class="p"></a><a href="topics/back_office_menu.htm" onclick="return LinkClick('116',true,true)" onDblClick="return LinkDblClick('116')" target="content" title="Back Office" onmousemove="window.status='Back Office'"><img id="img116" src="icons/1.gif" class="p"> <span id="l116" class="unselected">Back Office</span></a></nobr></div>
+<div id="d116" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><a href="#" onClick="return NodeClick('117')"><img id="imgn117" src="icons/tplus.gif" class="p"></a><a href="topics/Cash_Receipt.htm" onclick="return LinkClick('117',true,true)" onDblClick="return LinkDblClick('117')" target="content" title="Cash Receipt" onmousemove="window.status='Cash Receipt'"><img id="img117" src="icons/1.gif" class="p"> <span id="l117" class="unselected">Cash Receipt</span></a></nobr></div>
+<div id="d117" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Cash_Receipt_howto.htm" onclick="return LinkClick('118',false,true)" target="content" title="I. How to use Cash Receipt" onmousemove="window.status='I. How to use Cash Receipt'"><img src="icons/11.gif" class="p"> <span id="l118" class="unselected">I. How to use Cash Receipt</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Cash_Receipt_Advances.htm" onclick="return LinkClick('119',false,true)" target="content" title="II. Application of Advances from Customer" onmousemove="window.status='II. Application of Advances from Customer'"><img src="icons/11.gif" class="p"> <span id="l119" class="unselected">II. Application of Advances from Customer</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Cash_Receipt_find.htm" onclick="return LinkClick('120',false,true)" target="content" title="III. Searching for a Transaction in the Cash Receipt" onmousemove="window.status='III. Searching for a Transaction in the Cash Receipt'"><img src="icons/11.gif" class="p"> <span id="l120" class="unselected">III. Searching for a Transaction in the Cash Receipt</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Cash_Receipt_print.htm" onclick="return LinkClick('121',false,true)" target="content" title="IV. Printing a Cash Receipt / Batch Printing" onmousemove="window.status='IV. Printing a Cash Receipt / Batch Printing'"><img src="icons/11.gif" class="p"> <span id="l121" class="unselected">IV. Printing a Cash Receipt / Batch Printing</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/cash_receipt_reports.htm" onclick="return LinkClick('122',false,true)" target="content" title="V. Affected Reports in Report Manager Module" onmousemove="window.status='V. Affected Reports in Report Manager Module'"><img src="icons/11.gif" class="p"> <span id="l122" class="unselected">V. Affected Reports in Report Manager Module</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><a href="#" onClick="return NodeClick('123')"><img id="imgn123" src="icons/tplus.gif" class="p"></a><a href="topics/Deposit_of_Collection.htm" onclick="return LinkClick('123',true,true)" onDblClick="return LinkDblClick('123')" target="content" title="Deposit of Collection" onmousemove="window.status='Deposit of Collection'"><img id="img123" src="icons/1.gif" class="p"> <span id="l123" class="unselected">Deposit of Collection</span></a></nobr></div>
+<div id="d123" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Deposit_of_Collection_howto.htm" onclick="return LinkClick('124',false,true)" target="content" title="I. How to use Deposit of Collection" onmousemove="window.status='I. How to use Deposit of Collection'"><img src="icons/11.gif" class="p"> <span id="l124" class="unselected">I. How to use Deposit of Collection</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Bounced_Check.htm" onclick="return LinkClick('125',false,true)" target="content" title="Bounced Check" onmousemove="window.status='Bounced Check'"><img src="icons/11.gif" class="p"> <span id="l125" class="unselected">Bounced Check</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><a href="#" onClick="return NodeClick('126')"><img id="imgn126" src="icons/tplus.gif" class="p"></a><a href="topics/Cash_Disbursement.htm" onclick="return LinkClick('126',true,true)" onDblClick="return LinkDblClick('126')" target="content" title="Cash Disbursement" onmousemove="window.status='Cash Disbursement'"><img id="img126" src="icons/1.gif" class="p"> <span id="l126" class="unselected">Cash Disbursement</span></a></nobr></div>
+<div id="d126" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Cash_Disbursement_Howto.htm" onclick="return LinkClick('127',false,true)" target="content" title="I. How to use Cash Disbursement" onmousemove="window.status='I. How to use Cash Disbursement'"><img src="icons/11.gif" class="p"> <span id="l127" class="unselected">I. How to use Cash Disbursement</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Cash_Disbursement_advances.htm" onclick="return LinkClick('128',false,true)" target="content" title="II. Application of Advances to Supplier" onmousemove="window.status='II. Application of Advances to Supplier'"><img src="icons/11.gif" class="p"> <span id="l128" class="unselected">II. Application of Advances to Supplier</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Cash_Disbursement_find.htm" onclick="return LinkClick('129',false,true)" target="content" title="III. Searching for a Transaction in the Cash Disbursement" onmousemove="window.status='III. Searching for a Transaction in the Cash Disbursement'"><img src="icons/11.gif" class="p"> <span id="l129" class="unselected">III. Searching for a Transaction in the Cash Disbursement</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Cash_Disbursement_print.htm" onclick="return LinkClick('130',false,true)" target="content" title="IV. Printing a Cash Disbursement/ Batch Printing" onmousemove="window.status='IV. Printing a Cash Disbursement/ Batch Printing'"><img src="icons/11.gif" class="p"> <span id="l130" class="unselected">IV. Printing a Cash Disbursement/ Batch Printing</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/$$unsavedpage4.htm" onclick="return LinkClick('131',false,true)" target="content" title="New Item" onmousemove="window.status='New Item'"><img src="icons/11.gif" class="p"> <span id="l131" class="unselected">New Item</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><a href="#" onClick="return NodeClick('132')"><img id="imgn132" src="icons/tplus.gif" class="p"></a><a href="topics/Check_Releasing.htm" onclick="return LinkClick('132',true,true)" onDblClick="return LinkDblClick('132')" target="content" title="Check Releasing" onmousemove="window.status='Check Releasing'"><img id="img132" src="icons/1.gif" class="p"> <span id="l132" class="unselected">Check Releasing</span></a></nobr></div>
+<div id="d132" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Check_Releasing_howto.htm" onclick="return LinkClick('133',false,true)" target="content" title="I. How to use Check Releasing" onmousemove="window.status='I. How to use Check Releasing'"><img src="icons/11.gif" class="p"> <span id="l133" class="unselected">I. How to use Check Releasing</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><a href="#" onClick="return NodeClick('134')"><img id="imgn134" src="icons/tplus.gif" class="p"></a><a href="topics/Clearing_of_Issued_Checks.htm" onclick="return LinkClick('134',true,true)" onDblClick="return LinkDblClick('134')" target="content" title="Clearing of Issued Checks" onmousemove="window.status='Clearing of Issued Checks'"><img id="img134" src="icons/1.gif" class="p"> <span id="l134" class="unselected">Clearing of Issued Checks</span></a></nobr></div>
+<div id="d134" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Clearing_of_Issued_Checks_Howto.htm" onclick="return LinkClick('135',false,true)" target="content" title="I. How to use Clearing of Issued Checks" onmousemove="window.status='I. How to use Clearing of Issued Checks'"><img src="icons/11.gif" class="p"> <span id="l135" class="unselected">I. How to use Clearing of Issued Checks</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><a href="#" onClick="return NodeClick('136')"><img id="imgn136" src="icons/tplus.gif" class="p"></a><a href="topics/Bank_Adjustment.htm" onclick="return LinkClick('136',true,true)" onDblClick="return LinkDblClick('136')" target="content" title="Bank Adjustment" onmousemove="window.status='Bank Adjustment'"><img id="img136" src="icons/1.gif" class="p"> <span id="l136" class="unselected">Bank Adjustment</span></a></nobr></div>
+<div id="d136" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Bank_Adjustment_HowTo.htm" onclick="return LinkClick('137',false,true)" target="content" title="I. How to use Bank Adjustment" onmousemove="window.status='I. How to use Bank Adjustment'"><img src="icons/11.gif" class="p"> <span id="l137" class="unselected">I. How to use Bank Adjustment</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Bank_Reconciliation.htm" onclick="return LinkClick('138',false,true)" target="content" title="Bank Reconciliation" onmousemove="window.status='Bank Reconciliation'"><img src="icons/11.gif" class="p"> <span id="l138" class="unselected">Bank Reconciliation</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/Petty_Cash.htm" onclick="return LinkClick('139',false,true)" target="content" title="Petty Cash" onmousemove="window.status='Petty Cash'"><img src="icons/11.gif" class="p"> <span id="l139" class="unselected">Petty Cash</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/Petty_Cash_Replenishment.htm" onclick="return LinkClick('140',false,true)" target="content" title="Petty Cash Replenishment" onmousemove="window.status='Petty Cash Replenishment'"><img src="icons/11.gif" class="p"> <span id="l140" class="unselected">Petty Cash Replenishment</span></a></nobr></div>
+</div></div><script>divlist = [0,1,8,30,31,35,41,48,52,56,57,64,70,76,83,87,91,93,97,101,106,110,116,117,123,126,132,134,136]</script>
+</body>
+</html>
